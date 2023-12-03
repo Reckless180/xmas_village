@@ -11,5 +11,6 @@ router.get('/latestReleases', appController.latestReleasesPage)
 // API Routes
 router.get('/api/minimum-secure', appController.minimumSecure)
 router.get('/api/latest-releases', appController.latestReleases)
+router.get('/api/sync', appController.villageSync)
 
 module.exports = router

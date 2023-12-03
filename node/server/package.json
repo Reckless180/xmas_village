@@ -30,6 +30,7 @@
   "devDependencies": {
     "get-port": "^5.1.1",
     "nock": "^13.0.4",
+    "nodemon": "^3.0.2",
     "tape": "^5.0.1"
   }
 }

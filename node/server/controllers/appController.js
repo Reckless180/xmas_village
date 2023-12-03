@@ -4,6 +4,7 @@ const semverMajor = require('semver/functions/major')
 const semverGt = require('semver/functions/gt')
 const packageJson = require('../package.json')
 const NODE_API_URL = 'https://nodejs.org/dist/index.json'
+const TIME_API_URL = 'https://www.timeapi.io/api/Time/current/zone?timeZone=America/Toronto'
 
 const isGrater = (a, b) => semverGt(a.version, b.version)
 
@@ -33,6 +34,7 @@ exports.minimumSecurePage = async (req, res) => {
   })
 }
 
+
 exports.latestReleasesPage = async (req, res) => {
   const releases = await getJSON(NODE_API_URL)
   const latest = getLatestReleases(releases)
@@ -58,6 +60,16 @@ exports.latestReleases = async (req, res) => {
     res.setHeader('Content-type', 'application/json')
     const releases = await getJSON(NODE_API_URL)
     res.json(getLatestReleases(releases))
+  } catch (error) {
+    res.json({ error, message: `Unable to fetch data on ${req.route.path}` })
+  }
+}
+
+exports.villageSync = async (req, res) => {
+  try {
+    res.setHeader('Content-type', 'application/json')
+    const releases = await getJSON(TIME_API_URL)
+    res.json(releases)
   } catch (error) {
     res.json({ error, message: `Unable to fetch data on ${req.route.path}` })
   }
