@@ -2,6 +2,8 @@ const bent = require('bent')
 const getJSON = bent('json')
 const semverMajor = require('semver/functions/major')
 const semverGt = require('semver/functions/gt')
+const NTP = require('ntp-time').Client
+const ntpClient = new NTP('labswitch.hfenet.net', 123, { timeout: 5000})
 const packageJson = require('../package.json')
 const NODE_API_URL = 'https://nodejs.org/dist/index.json'
 const TIME_API_URL = 'https://www.timeapi.io/api/Time/current/zone?timeZone=America/Toronto'
@@ -17,6 +19,7 @@ const getLatestReleases = (releases) =>
     }
     return acc
   }, {})
+
 
 exports.dependencies = (req, res) => {
   const dependencies = Object.entries(
@@ -68,8 +71,10 @@ exports.latestReleases = async (req, res) => {
 exports.villageSync = async (req, res) => {
   try {
     res.setHeader('Content-type', 'application/json')
-    const releases = await getJSON(TIME_API_URL)
-    res.json(releases)
+    // const releases = await getJSON(TIME_API_URL)
+    const ntpTime = await ntpClient.syncTime()
+    const rawJson = {date: ntpTime["time"], countdown: "22"}
+    res.json(rawJson)
   } catch (error) {
     res.json({ error, message: `Unable to fetch data on ${req.route.path}` })
   }
